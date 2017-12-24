@@ -3,9 +3,9 @@ php7 extension self-study notes
 
 #### 目录
 
-[1，创建一个扩展](./create_ext.md)
+[1. 创建一个扩展](./create_ext.md)
 
-[1，函数](./function.md)
+[2. 函数](./function.md)
 
 
 #### 附录
