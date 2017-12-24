@@ -1,11 +1,12 @@
-### 创建内部函数
+## 创建内部函数
+这里添加一个test()方法
 
-## Example
+### Example
 ```
 # php -r 'test("hello world!");'
 ```
 
-## 声明
+### 声明
 自定义扩展中
 ```
 PHP_FUNCTION(test);
@@ -17,7 +18,7 @@ PHP_FUNCTION(test);
 void zif_test(zend_execute_data *execute_data, zval *return_value);
 ```
 
-## 定义
+### 定义
 自定义扩展中
 ```
 PHP_FUNCTION(test)
@@ -42,7 +43,7 @@ void zif_test(zend_execute_data *execute_data, zval *return_value)
 }
 ```
 
-## 传参
+### 传参
 扩展中定义函数的参数
 ```
 ZEND_BEGIN_ARG_INFO_EX(arginfo_test_index, 0, 0, 1)
@@ -79,7 +80,7 @@ static const zend_internal_arg_info arginfo_test_index[] = {
 
 ```
 
-## 添加到扩展函数数组中
+### 添加到扩展函数数组中
 扩展中把函数添加到zend_function_entry数组中
 ```
 const zend_function_entry test_functions[] = {
