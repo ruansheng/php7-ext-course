@@ -28,6 +28,13 @@ PHP_FUNCTION(test)
 ```
 
 ### 返回值方式二
+```
+PHP_FUNCTION(test)
+{
+   RETURN_LONG(10);
+}
+```
+
 PHP提供了很多专门用于设置返回值的宏，这些宏定义在 Zend/zend_API.h
 ```
 #define RETURN_BOOL(b) 					{ RETVAL_BOOL(b); return; }
