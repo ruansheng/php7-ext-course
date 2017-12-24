@@ -6,23 +6,28 @@
 ```
 
 ## 声明
+自定义扩展中
 ```
-// 自定义扩展中
 PHP_FUNCTION(test);
+```
 
+** 解析说明 **
+```
 // 宏展开
 void zif_test(zend_execute_data *execute_data, zval *return_value);
 ```
 
 ## 定义
+自定义扩展中
 ```
-// 自定义扩展中
 PHP_FUNCTION(test)
 {
     // do something
 }
+```
 
-// 其中 
+** 解析说明 **
+```
 // main/php.h
 #define PHP_FUNCTION			ZEND_FUNCTION
 // Zend/zend_API.h
@@ -38,13 +43,15 @@ void zif_test(zend_execute_data *execute_data, zval *return_value)
 ```
 
 ## 传参
+扩展中定义函数的参数
 ```
-// 扩展中定义函数的参数
 ZEND_BEGIN_ARG_INFO_EX(arginfo_test_index, 0, 0, 1)
 	ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
+```
 
-// ** 解析说明 **
+** 解析说明 **
+```
 // Zend/zend_API.h
 #define ZEND_BEGIN_ARG_INFO_EX(name, _unused, return_reference, required_num_args)	\
 	static const zend_internal_arg_info name[] = { \
@@ -97,3 +104,26 @@ typedef struct _zend_function_entry {
 	uint32_t flags;
 } zend_function_entry;
 ```
+
+## 函数内部获取传递的参数
+这里PHP7中提供了一种高效的读取参数的方法
+```
+zval *data;
+	
+ZEND_PARSE_PARAMETERS_START(1, 1)
+	Z_PARAM_ZVAL(data)
+ZEND_PARSE_PARAMETERS_END();
+```
+
+PHP5/PHP7中都可以使用的方式
+```
+zval *data;
+
+if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &data) == FAILURE) {
+	return;
+}
+```
+
+## 函数返回值
+
+
