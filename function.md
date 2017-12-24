@@ -80,15 +80,17 @@ static const zend_internal_arg_info arginfo_test_index[] = {
 ```
 
 ## 添加到扩展函数数组中
+扩展中把函数添加到zend_function_entry数组中
 ```
-// 自定义扩展中
 const zend_function_entry test_functions[] = {
 	PHP_FE(test,	arginfo_test_index)
 	PHP_FE_END  // 注意: 不可省略
 };
 
-// ** 解析说明 **
+```
 
+** 解析说明 **
+```
 // PHP_FE(test,	arginfo_test_index) 宏展开 Zend/zend_API.h
 { "es_dump", zif_test, arginfo_test_index, 1, 0 },
 
@@ -104,26 +106,3 @@ typedef struct _zend_function_entry {
 	uint32_t flags;
 } zend_function_entry;
 ```
-
-## 函数内部获取传递的参数
-这里PHP7中提供了一种高效的读取参数的方法
-```
-zval *data;
-	
-ZEND_PARSE_PARAMETERS_START(1, 1)
-	Z_PARAM_ZVAL(data)
-ZEND_PARSE_PARAMETERS_END();
-```
-
-PHP5/PHP7中都可以使用的方式
-```
-zval *data;
-
-if (zend_parse_parameters(ZEND_NUM_ARGS(), "z", &data) == FAILURE) {
-	return;
-}
-```
-
-## 函数返回值
-
-
