@@ -48,6 +48,29 @@ int zm_startup_test(int type, int module_number)
 }
 ```
 
+### 注册常量究竟做了什么
+```
+ZEND_API void zend_register_long_constant(const char *name, size_t name_len, zend_long lval, int flags, int module_number)
+{
+	zend_constant c;
+
+	ZVAL_LONG(&c.value, lval);
+	c.flags = flags;
+	c.name = zend_string_init(name, name_len, flags & CONST_PERSISTENT);
+	c.module_number = module_number;
+	zend_register_constant(&c);
+}
+
+ZEND_API int zend_register_constant(zend_constant *c)
+{
+   ...
+   zend_hash_add_constant(EG(zend_constants), name, c)
+   ...
+}
+// 可见注册常量其实定义一个zend_constant变量，添加到 EG(zend_constants) 中
+```
+
+
 ### 常量的其他操作
 ```
 // 看上面的宏只涉及到null、bool、long、double、string 类型常量的注册，如果要注册其他类型的常量，可以使用:
