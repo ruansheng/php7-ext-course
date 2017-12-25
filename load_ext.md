@@ -40,6 +40,10 @@ ZEND_GET_MODULE(test)
 ```
 宏展开结果
 ```
+ZEND_GET_MODULE(test)
+
+的宏展开:
+
 extern "C" {
   __declspec(dllexport) zend_module_entry *get_module(void) 
   { 
