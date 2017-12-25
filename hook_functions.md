@@ -38,34 +38,73 @@ PHP_MINFO_FUNCTION(test)
 	php_info_print_table_header(2, "test support", "enabled");
 	php_info_print_table_end();
 }
-
 ```
 
 ### PHP_MINIT_FUNCTION(test) 钩子函数
 ```
-
+// 宏展开结果
+int zm_startup_test(int type, int module_number)
+{
+	
+}
+在扩展中也可以直接这样来定义钩子函数
+这个钩子函数在内核加载扩展的时候会调用，具体体现在:
+sapi模式: 新创建php-fpm子进程的时候会依次调用每个扩展的此函数
+cli模式: 每执行一次php xxx.php的时候会调用
 ```
 
 
 ### PHP_RINIT_FUNCTION(test) 钩子函数
 ```
+// 宏展开结果
+int zm_activate_test(int type, int module_number)
+{
 
+}
+在扩展中也可以直接这样来定义钩子函数
+这个钩子函数在每个请求到来的时候会调用，具体体现在:
+sapi模式: 一个http请求经fastcgi进入php-fpm中被处理的时候会依次调用每个扩展的此函数
+cli模式: 每执行一次php xxx.php的时候会调用
 ```
 
 
 ### PHP_RSHUTDOWN_FUNCTION(test) 钩子函数
 ```
+// 宏展开结果
+int zm_deactivate_test(int type, int module_number)
+{
 
+}
+在扩展中也可以直接这样来定义钩子函数
+这个钩子函数在每个请求到来的时候会调用，具体体现在:
+sapi模式: 一个http请求经fastcgi进入php-fpm中被处理完成的时候会依次调用每个扩展的此函数
+cli模式: 每执行一次php xxx.php结束的时候会调用
 ```
 
 
 ### PHP_MSHUTDOWN_FUNCTION(test) 钩子函数
 ```
+// 宏展开结果
+int zm_shutdown_test(int type, int module_number)
+{
 
+}
+在扩展中也可以直接这样来定义钩子函数
+这个钩子函数在每个请求到来的时候会调用，具体体现在:
+sapi模式: 一个php-fpm子进程被销毁的时候会依次调用每个扩展的此函数
+cli模式: 每执行一次php xxx.php结束的时候会调用
 ```
 
 
 ### PHP_MINFO_FUNCTION(test) 钩子函数
+```
+// 宏展开结果
+void zm_info_test(zend_module_entry *zend_module)
+{
+
+}
+在扩展中也可以直接这样来定义钩子函数
+```
 PHP内核提供了一系列的函数来方便控制扩展信息的输出展示，这些函数定义在 ext/standard/info.h 中
 ```
 PHPAPI zend_string *php_info_html_esc(char *string);
@@ -109,14 +148,14 @@ PHPAPI void php_info_print_table_colspan_header(int num_cols, char *header) /* {
 创建好的扩展，在test.c文件中会有 zend_module_entry 类型的一个结构体被初始化
 zend_module_entry test_module_entry = {
 	STANDARD_MODULE_HEADER,
-	"test",
-	test_functions,
+	"test",  // 扩展名称
+	test_functions,  // 扩展中定义的函数数组，每个数组元素也是一个对应的结构体，在后面会有讲解
 	PHP_MINIT(test),
 	PHP_MSHUTDOWN(test),
 	PHP_RINIT(test),		/* Replace with NULL if there's nothing to do at request start */
 	PHP_RSHUTDOWN(test),	/* Replace with NULL if there's nothing to do at request end */
 	PHP_MINFO(test),
-	PHP_TEST_VERSION,
+	PHP_TEST_VERSION,  // 扩展的版本
 	STANDARD_MODULE_PROPERTIES
 };
 ```
@@ -198,5 +237,6 @@ zm_activate_test
 zm_deactivate_test
 zm_info_test
 
-我们都知道宏替换是发生在预处理阶段，其实在扩展中也可以直接用宏展开的结果来替代PHP_MINIT(test)这样的地方，只是这样不够灵活，还是推荐使用官方的方式
+我们都知道宏替换是发生在预处理阶段，其实在扩展中也可以直接用宏展开的结果来替代PHP_MINIT(test)这样的地方
+只是这样不够灵活，还是推荐使用官方的方式
 ```
