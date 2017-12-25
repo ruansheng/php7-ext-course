@@ -33,4 +33,6 @@ php7 extension self-study notes
 
 [15. 扩展中定义多个类](./zval.md)
 
+#### 调试篇
+[1. 调试扩展](./gdb_debug.md)
 
