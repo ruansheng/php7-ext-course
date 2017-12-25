@@ -66,6 +66,38 @@ PHP_MINFO_FUNCTION(test)
 
 
 ### PHP_MINFO_FUNCTION(test) 钩子函数
+PHP内核提供了一系列的函数来方便控制扩展信息的输出展示，这些函数定义在 ext/standard/info.h 中
 ```
+PHPAPI zend_string *php_info_html_esc(char *string);
+PHPAPI void php_info_html_esc_write(char *string, int str_len);
+PHPAPI void php_print_info_htmlhead(void);
+PHPAPI void php_print_info(int flag);
+PHPAPI void php_print_style(void);
+PHPAPI void php_info_print_style(void);
+PHPAPI void php_info_print_table_colspan_header(int num_cols, char *header);
+PHPAPI void php_info_print_table_header(int num_cols, ...);
+PHPAPI void php_info_print_table_row(int num_cols, ...);
+PHPAPI void php_info_print_table_row_ex(int num_cols, const char *, ...);
+PHPAPI void php_info_print_table_start(void);
+PHPAPI void php_info_print_table_end(void);
+PHPAPI void php_info_print_box_start(int bg);
+PHPAPI void php_info_print_box_end(void);
+PHPAPI void php_info_print_hr(void);
+PHPAPI void php_info_print_module(zend_module_entry *module);
+PHPAPI zend_string *php_get_uname(char mode);
+```
+可以看一看这里函数内部的具体实现，下面代码以 php_info_print_table_colspan_header 为例来展示
+```
+PHPAPI void php_info_print_table_colspan_header(int num_cols, char *header) /* {{{ */
+{
+	int spaces;
+
+	if (!sapi_module.phpinfo_as_text) {
+		php_info_printf("<tr class=\"h\"><th colspan=\"%d\">%s</th></tr>\n", num_cols, header );
+	} else {
+		spaces = (int)(74 - strlen(header));
+		php_info_printf("%*s%s%*s\n", (int)(spaces/2), " ", header, (int)(spaces/2), " ");
+	}
+}
 
 ```
