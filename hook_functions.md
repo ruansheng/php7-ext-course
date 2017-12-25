@@ -7,7 +7,7 @@
 // 模块初始化的时候调用
 PHP_MINIT_FUNCTION(test)
 {
-	return SUCCESS;
+  return SUCCESS;
 }
 
 // 请求初始化的时候调用
@@ -16,13 +16,13 @@ PHP_RINIT_FUNCTION(test)
 #if defined(COMPILE_DL_TEST) && defined(ZTS)
 	ZEND_TSRMLS_CACHE_UPDATE();
 #endif
-	return SUCCESS;
+  return SUCCESS;
 }
 
 // 请求结束关闭的时候调用
 PHP_RSHUTDOWN_FUNCTION(test)
 {
-	return SUCCESS;
+  return SUCCESS;
 }
 
 // 模块结束关闭的时候调用
@@ -38,5 +38,34 @@ PHP_MINFO_FUNCTION(test)
 	php_info_print_table_header(2, "test support", "enabled");
 	php_info_print_table_end();
 }
+
+```
+
+### PHP_MINIT_FUNCTION(test) 钩子函数
+```
+
+```
+
+
+### PHP_RINIT_FUNCTION(test) 钩子函数
+```
+
+```
+
+
+### PHP_RSHUTDOWN_FUNCTION(test) 钩子函数
+```
+
+```
+
+
+### PHP_MSHUTDOWN_FUNCTION(test) 钩子函数
+```
+
+```
+
+
+### PHP_MINFO_FUNCTION(test) 钩子函数
+```
 
 ```
