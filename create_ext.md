@@ -61,6 +61,8 @@ php-7.2.0
 			php_error(E_WARNING, "my_sum: not yet implemented");
 		}
 		/* }}} */
+--skel=dir  设置生成的扩展项目存储的位置，不指定该项则默认在ext/module中	
+--no-help  指定生成的扩展项目的文件中不包含注释，否则会生成很多注释说明 		
 ```
 
 ### 创建扩展目录
