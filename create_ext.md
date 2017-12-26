@@ -53,6 +53,7 @@ config.m4
 config.w32
 php_test.h
 tests
+    001.phpt
 ```
 
 ### 修改config.m4
@@ -64,6 +65,7 @@ del [  --enable-test           Enable test support])
 改为
 
 PHP_ARG_ENABLE(test, whether to enable test support,
+del Make sure that the comment is aligned:
 [  --enable-test           Enable test support])
 
 注意: del 是config.m4文件的注释符号，就好比C语言中的//注释符号
