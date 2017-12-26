@@ -31,3 +31,37 @@ int _call_user_function_ex(zval *object, zval *function_name, zval *retval_ptr, 
 ```
 
 ### 扩展中调用.php文件中定义的函数
+```
+// 扩展中定义函数
+PHP_FUNCTION(mysum1)
+{
+	zval call_func_name;
+	zval call_func_ret;
+	uint32_t param_count = 2;
+	zval func_params[2];
+
+	ZVAL_STRING(&call_func_name, "my_sum");
+	ZVAL_LONG(&func_params[0], 10);
+	ZVAL_LONG(&func_params[1], 20);
+
+	if(SUCCESS != call_user_function(EG(function_table), NULL, &call_func_name, &call_func_ret, param_count, func_params)) 
+	{
+		RETURN_FALSE;
+	}
+
+	RETURN_LONG(Z_LVAL(call_func_ret));
+}
+
+// test_call_func.php 文件
+<?php
+function my_sum($a, $b){
+    return $a + $b;
+}
+
+$c = mysum1();
+var_dump($c);
+
+// 执行test_call_func.php 文件，调用扩展中的函数，触发扩展中调用用户自定义函数
+php test_call_func.php
+结果输出 int(30)
+```
