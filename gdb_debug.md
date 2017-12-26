@@ -19,7 +19,7 @@ PHP_FUNCTION(echo_hello)
 ```
 
 ### 编译扩展
-gcc 编译的时候加上-g参数，在PHP扩展的编译中提供了--enable-debug参数，这样在编译好的.so文件内部就生成符号
+gcc 编译的时候加上-g参数，在PHP扩展的编译中提供了--enable-debug参数，这样在编译时会往.so文件内部加入调试符号
 ```
 ./configure --with-php-config=/usr/local/php/bin/php-config --enable-debug
 ```
