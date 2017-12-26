@@ -69,16 +69,18 @@ php-7.2.0
 ```
 # ./ext_skel --extname=test
 // 创建之后在ext目录下生成一个项目目录结构
-CREDITS
-EXPERIMENTAL
-test.c
-test.php
-README.md
-config.m4
-config.w32
-php_test.h
-tests
-    001.phpt
+ext
+    test
+	CREDITS
+	EXPERIMENTAL
+	test.c
+	test.php
+	README.md
+	config.m4
+	config.w32
+	php_test.h
+	tests
+	    001.phpt
 ```
 
 ### 修改config.m4
