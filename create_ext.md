@@ -3,19 +3,23 @@
 
 ### PHP7代码项目目录结构
 ```
-TSRM
-Zend
-appveyor
-build
-ext
-main
-pear
-sapi
-scripts
-tests
-travis
-win32
-...
+php-7.2.0
+    TSRM
+    Zend
+    appveyor
+    build
+    ext
+    	bcmath
+	ba2
+	...
+    main
+    pear
+    sapi
+    scripts
+    tests
+    travis
+    win32
+    ...
 ```
 
 ### 创建扩展工具
