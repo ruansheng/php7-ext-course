@@ -27,7 +27,7 @@ php7 extension self-study notes
 
 [12. 为扩展新增php.ini配置项](./add_php_ini.md)
 
-[13. 扩展中调用函数](./zval.md)
+[13. 扩展中调用函数](./call_function.md)
 
 [14. 扩展中调用方法](./zval.md)
 
