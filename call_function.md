@@ -2,7 +2,7 @@
 在扩展可以调用:
 1. 用户在.php文件中定义的函数
 2. 其他扩展中定义的函数
-3. PHP内核中的函数 如 array_merge
+3. PHP内核中的函数 如 pow、array_merge 等
 
 ### call_user_function
 看到这个是不是很熟悉，想起PHP中的call_user_function()函数，但call_user_function在PHP内核中是一个宏
@@ -64,4 +64,30 @@ var_dump($c);
 // 执行test_call_func.php 文件，调用扩展中的函数，触发扩展中调用用户自定义函数
 php test_call_func.php
 结果输出 int(30)
+```
+
+### 扩展中调用PHP内核函数
+```
+// 扩展中定义函数
+PHP_FUNCTION(mypow)
+{
+	zval call_func_name;
+	zval call_func_ret;
+	uint32_t param_count = 2;
+	zval func_params[2];
+
+	ZVAL_STRING(&call_func_name, "pow");
+	ZVAL_LONG(&func_params[0], 2);
+	ZVAL_LONG(&func_params[1], 3);
+
+	if(SUCCESS != call_user_function(EG(function_table), NULL, &call_func_name, &call_func_ret, param_count, func_params)) 
+	{
+		RETURN_FALSE;
+	}
+
+	RETURN_LONG(Z_LVAL(call_func_ret));
+}
+
+// 执行 php -r 'var_dump(mypow());'，调用扩展中的函数，触发扩展中调用内核函数
+结果输出 int(8)
 ```
