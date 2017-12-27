@@ -26,7 +26,7 @@ const zend_function_entry 	test_methods[] = {
 };
 
 // 在 PHP_MINIT_FUNCTION(test) 钩子函数中注册类，初始化 my_test_ce
-PHP_MINIT_FUNCTION(test_ext)
+PHP_MINIT_FUNCTION(test)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
