@@ -19,25 +19,25 @@ php7 extension self-study notes
 
 [8.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
 
-[8.&nbsp; 定义全局常量](./constant.md)
+[9.&nbsp; 定义全局常量](./constant.md)
 
-[9.&nbsp; 定义类](./define_class.md)
+[10. 定义类](./define_class.md)
 
-[10. 定义接口](./define_interface.md)
+[11. 定义接口](./define_interface.md)
 
-[11. 类常量](./class_constant.md)
+[12. 扩展中定义多个类](./define_more_class.md)
 
-[12. 类成员方法](./class_method.md)
+[13. 类继承父类](./class_extends.md)
 
-[13. 扩展中调用函数](./call_function.md)
+[14. 类实现接口](./class_implements.md)
 
-[14. 扩展中调用方法](./call_method.md)
+[15. 类常量](./class_constant.md)
 
-[15. 扩展中定义多个类](./define_more_class.md)
+[16. 类成员方法](./class_method.md)
 
-[16. 类继承父类](./class_extends.md)
+[17. 扩展中调用函数](./call_function.md)
 
-[17. 类实现接口](./class_implements.md)
+[18. 扩展中调用方法](./call_method.md)
 
-[17. GDB调试扩展](./gdb_debug.md)
+[19. GDB调试扩展](./gdb_debug.md)
 
