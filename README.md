@@ -7,7 +7,7 @@ php7 extension self-study notes
 
 [2.&nbsp; 扩展中的钩子函数](./hook_functions.md)
 
-[3.  PHP7内核加载扩展](./load_ext.md)
+[3.&nbsp; PHP7内核加载扩展](./load_ext.md)
 
 [4.&nbsp; 创建函数](./create_function.md)
 
