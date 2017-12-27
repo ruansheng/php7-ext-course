@@ -20,29 +20,31 @@
 
 [7.&nbsp; 函数/方法返回值](./function_method_return.md)
 
-[8.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
+[8.&nbsp; 全局资源](./globals_ref.md)
 
-[9.&nbsp; 定义全局常量](./constant.md)
+[9.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
 
-[10. 定义类](./define_class.md)
+[10. 定义全局常量](./constant.md)
 
-[11. 定义接口](./define_interface.md)
+[11. 定义类](./define_class.md)
 
-[12. 扩展中定义多个类](./define_more_class.md)
+[12. 定义接口](./define_interface.md)
 
-[13. 类继承父类](./class_extends.md)
+[13. 扩展中定义多个类](./define_more_class.md)
 
-[14. 类实现接口](./class_implements.md)
+[14. 类继承父类](./class_extends.md)
 
-[15. 类常量](./class_constant.md)
+[15. 类实现接口](./class_implements.md)
 
-[16. 类成员方法](./class_method.md)
+[16. 类常量](./class_constant.md)
 
-[17. 扩展中调用函数](./call_function.md)
+[17. 类成员方法](./class_method.md)
 
-[18. 扩展中调用方法](./call_method.md)
+[18. 扩展中调用函数](./call_function.md)
 
-[19. 扩展之间的依赖](./ext_deps.md)
+[19. 扩展中调用方法](./call_method.md)
 
-[20. GDB调试扩展](./gdb_debug.md)
+[20. 扩展之间的依赖](./ext_deps.md)
+
+[21. GDB调试扩展](./gdb_debug.md)
 
