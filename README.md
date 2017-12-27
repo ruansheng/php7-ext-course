@@ -42,5 +42,8 @@
 
 [18. 扩展中调用方法](./call_method.md)
 
-[19. GDB调试扩展](./gdb_debug.md)
+#### 其他
+[1.&nbsp; 扩展之间的依赖](./ext_deps.md)
+
+[2. GDB调试扩展](./gdb_debug.md)
 
