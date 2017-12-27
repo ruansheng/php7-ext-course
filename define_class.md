@@ -60,7 +60,7 @@ PHP_MINIT_FUNCTION(test)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
-	my_test_ce = zend_register_internal_class(&ce);  // 
+	my_test_ce = zend_register_internal_class(&ce);  
 	my_test_ce->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS; 
 
 	return SUCCESS;
