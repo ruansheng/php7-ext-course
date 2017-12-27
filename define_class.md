@@ -85,6 +85,6 @@ object(AAA)#1 (0) {
 ### 扩展中定义 final class
 ```
 我们可以找到一个 ZEND_ACC_FINAL_CLASS 宏，是用来注册设置final class的
-这里有个特别的点需要注意，类似注册抽象类一样的，那么注册最终类是不是也是my_test_ce->ce_flags = ZEND_ACC_FINAL_CLASS;呢
+这里有个特别的点需要注意，类似注册抽象类一样的，那么注册final class是不是也是my_test_ce->ce_flags = ZEND_ACC_FINAL_CLASS;呢
 这里有点疑惑，在PHP5.x的时候是这样的，但是在PHP7中被移除了
 ```
