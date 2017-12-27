@@ -1,5 +1,4 @@
 # PHP7扩展开发教程
-php7 extension self-study notes
 
 #### 环境要求
 Linux
