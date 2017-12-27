@@ -92,7 +92,7 @@ PHP_MINIT_FUNCTION(test)
 {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
-	my_test_ce = zend_register_internal_class(&ce);  // 
+	my_test_ce = zend_register_internal_class(&ce);
 	my_test_ce->ce_flags = ZEND_ACC_FINAL_CLASS; 
 
 	return SUCCESS;
@@ -101,10 +101,6 @@ PHP_MINIT_FUNCTION(test)
 编译加载完扩展就才能测试
 php -r 'var_dump(new Mytest());'
 输出:
-PHP Fatal error:  Uncaught Error: Cannot instantiate abstract class Mytest in Command line code:1
-Stack trace:
-#0 {main}
-  thrown in Command line code on line 1
 // 由上测试可以看出抽象类是不能被实例化的，否则会报致命错误
 
 php -r 'class AAA extends Mytest{};var_dump(new AAA());'
