@@ -52,7 +52,64 @@ object(Mytest)#1 (0) {
 
 ### 扩展中定义 abstract class
 ```
-// ZEND_ACC_EXPLICIT_ABSTRACT_CLASS: 在类名称前加了abstract关键字
-// ZEND_ACC_FINAL_CLASS
+在扩展中注册抽象类还是和常规类一样的方式，区别只是在: 注册这个class到zend engine 之后需要设置一下这个类的类型
+举报代码是 my_test_ce->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS; 
 
+// 在 PHP_MINIT_FUNCTION(test) 钩子函数中注册类，初始化 my_test_ce
+PHP_MINIT_FUNCTION(test)
+{
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
+	my_test_ce = zend_register_internal_class(&ce);  // 
+	my_test_ce->ce_flags = ZEND_ACC_EXPLICIT_ABSTRACT_CLASS; 
+
+	return SUCCESS;
+}
+
+编译加载完扩展就才能测试
+php -r 'var_dump(new Mytest());'
+输出:
+PHP Fatal error:  Uncaught Error: Cannot instantiate abstract class Mytest in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1
+// 由上测试可以看出抽象类是不能被实例化的，否则会报致命错误
+
+php -r 'class AAA extends Mytest{};var_dump(new AAA());'
+输出:
+object(AAA)#1 (0) {
+}
+// 由上测试可以看出抽象类是可以被继承的
+```
+
+### 扩展中定义 final class
+```
+在扩展中注册最终类还是和常规类一样的方式，区别只是在: 注册这个class到zend engine 之后需要设置一下这个类的类型
+举报代码是 my_test_ce->ce_flags = ZEND_ACC_FINAL_CLASS; 
+
+// 在 PHP_MINIT_FUNCTION(test) 钩子函数中注册类，初始化 my_test_ce
+PHP_MINIT_FUNCTION(test)
+{
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
+	my_test_ce = zend_register_internal_class(&ce);  // 
+	my_test_ce->ce_flags = ZEND_ACC_FINAL_CLASS; 
+
+	return SUCCESS;
+}
+
+编译加载完扩展就才能测试
+php -r 'var_dump(new Mytest());'
+输出:
+PHP Fatal error:  Uncaught Error: Cannot instantiate abstract class Mytest in Command line code:1
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 1
+// 由上测试可以看出抽象类是不能被实例化的，否则会报致命错误
+
+php -r 'class AAA extends Mytest{};var_dump(new AAA());'
+输出:
+object(AAA)#1 (0) {
+}
+// 由上测试可以看出抽象类是可以被继承的
 ```
