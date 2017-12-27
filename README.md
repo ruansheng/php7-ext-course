@@ -1,5 +1,9 @@
-# php7-ext-notes
+# PHP7扩展开发教程
 php7 extension self-study notes
+
+#### 环境要求
+Linux
+PHP7+
 
 #### 目录
 
