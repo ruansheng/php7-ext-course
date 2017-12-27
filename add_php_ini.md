@@ -95,7 +95,16 @@ PHP_FUNCTION(test_ext_ini)
 	RETURN_LONG(TEST_G(global_value));
 }
 
-// 测试
+// 先不配置php.ini配置项
 php -r 'var_dump(test_ext_ini());'
 结果: int(42)
+
+// 配置php.ini
+[test_ext]
+test.global_value = "1000"
+test.global_string = "ruansheng"
+再测试
+php -r 'var_dump(test_ext_ini());'
+结果: int(1000)
+
 ```
