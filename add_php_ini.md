@@ -12,8 +12,8 @@ php.ini配置文件的规则是:
 新创建的扩展，会有一些关于php.ini配置项的代码被注释起来
 /* Remove comments and fill if you need to have entries in php.ini
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("test.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_test_ext_globals, test_ext_globals)
-    STD_PHP_INI_ENTRY("test.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_test_ext_globals, test_ext_globals)
+    STD_PHP_INI_ENTRY("test.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_test_globals, test_globals)
+    STD_PHP_INI_ENTRY("test.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_test_globals, test_globals)
 PHP_INI_END()
 */
 这里是描述当前扩展需要解析配置项的配置
@@ -60,7 +60,35 @@ STD_ZEND_INI_ENTRY(name, default_value, modifiable, on_modify, property_name, st
 5. property_name 要解析到的struct_type结构中的成员
 6. struct_type 解析到的结构类型
 7. struct_ptr 解析到的结构的地址
+```
 
+### 全局资源
+全局资源的用处: 用来存储解析的配置项的值
+```
+// 在test_php.h 文件中 有被注释起来的全局资源定义的代码
+/*
+Declare any global variables you may need between the BEGIN
+and END macros here:
+
+ZEND_BEGIN_MODULE_GLOBALS(test)
+	zend_long  global_value;
+	char *global_string;
+ZEND_END_MODULE_GLOBALS(test)
+*/
+
+// 在 Zend/zend_API.h 中
+#define ZEND_BEGIN_MODULE_GLOBALS(module_name)		\
+	typedef struct _zend_##module_name##_globals {
+#define ZEND_END_MODULE_GLOBALS(module_name)		\
+	} zend_##module_name##_globals;
+
+宏展开结果:
+typedef struct _zend_test_globals {
+	zend_long  global_value;
+	char *global_string;
+} zend_test_globals;
+
+// 由上可见是定义了一个全局结构体变量来存储从php.ini中解析出来的内容
 ```
 
 ### 扩展注册配置项
@@ -74,60 +102,6 @@ STD_ZEND_INI_ENTRY(name, default_value, modifiable, on_modify, property_name, st
   
 // 在 Zend/zend_ini.h 中  
 #define REGISTER_INI_ENTRIES() zend_register_ini_entries(ini_entries, module_number)  
-  
-// 在 Zend/zend_ini.c 中  
-ZEND_API int zend_register_ini_entries(const zend_ini_entry_def *ini_entry, int module_number) /* {{{ */
-{
-	zend_ini_entry *p;
-	zval *default_value;
-	HashTable *directives = registered_zend_ini_directives;
-
-#ifdef ZTS
-	if (directives != EG(ini_directives)) {
-		directives = EG(ini_directives);
-	}
-#endif
-
-	while (ini_entry->name) {
-		p = pemalloc(sizeof(zend_ini_entry), 1);
-		p->name = zend_string_init(ini_entry->name, ini_entry->name_length, 1);
-		p->on_modify = ini_entry->on_modify;
-		p->mh_arg1 = ini_entry->mh_arg1;
-		p->mh_arg2 = ini_entry->mh_arg2;
-		p->mh_arg3 = ini_entry->mh_arg3;
-		p->value = NULL;
-		p->orig_value = NULL;
-		p->displayer = ini_entry->displayer;
-		p->modifiable = ini_entry->modifiable;
-
-		p->orig_modifiable = 0;
-		p->modified = 0;
-		p->module_number = module_number;
-
-		if (zend_hash_add_ptr(directives, p->name, (void*)p) == NULL) {
-			if (p->name) {
-				zend_string_release(p->name);
-			}
-			zend_unregister_ini_entries(module_number);
-			return FAILURE;
-		}
-		if (((default_value = zend_get_configuration_directive(p->name)) != NULL) &&
-            (!p->on_modify || p->on_modify(p, Z_STR_P(default_value), p->mh_arg1, p->mh_arg2, p->mh_arg3, ZEND_INI_STAGE_STARTUP) == SUCCESS)) {
-
-			p->value = zend_string_copy(Z_STR_P(default_value));
-		} else {
-			p->value = ini_entry->value ?
-				zend_string_init(ini_entry->value, ini_entry->value_length, 1) : NULL;
-
-			if (p->on_modify) {
-        // 调用定义的handler处理
-				p->on_modify(p, p->value, p->mh_arg1, p->mh_arg2, p->mh_arg3, ZEND_INI_STAGE_STARTUP);
-			}
-		}
-		ini_entry++;
-	}
-	return SUCCESS;
-} 
  
 去掉注释之后就可以了:
 PHP_MINIT_FUNCTION(test)
