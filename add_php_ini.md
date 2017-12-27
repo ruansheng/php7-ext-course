@@ -62,35 +62,6 @@ STD_ZEND_INI_ENTRY(name, default_value, modifiable, on_modify, property_name, st
 7. struct_ptr 解析到的结构的地址
 ```
 
-### 全局资源
-全局资源的用处: 用来存储解析的配置项的值
-```
-// 在test_php.h 文件中 有被注释起来的全局资源定义的代码
-/*
-Declare any global variables you may need between the BEGIN
-and END macros here:
-
-ZEND_BEGIN_MODULE_GLOBALS(test)
-	zend_long  global_value;
-	char *global_string;
-ZEND_END_MODULE_GLOBALS(test)
-*/
-
-// 在 Zend/zend_API.h 中
-#define ZEND_BEGIN_MODULE_GLOBALS(module_name)		\
-	typedef struct _zend_##module_name##_globals {
-#define ZEND_END_MODULE_GLOBALS(module_name)		\
-	} zend_##module_name##_globals;
-
-宏展开结果:
-typedef struct _zend_test_globals {
-	zend_long  global_value;
-	char *global_string;
-} zend_test_globals;
-
-// 由上可见是定义了一个全局结构体变量来存储从php.ini中解析出来的内容
-```
-
 ### 扩展注册配置项
 上面的步骤只是初始化了 zend_ini_entry_def 结构体数组，只是初始化了，没有注册到扩展中是不能用的
 注册到扩展是在模块初始化阶段完成的，接下来看一下怎么注册:
