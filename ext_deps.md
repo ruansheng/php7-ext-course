@@ -41,7 +41,7 @@ zend_module_dep deps[] = {
 };
 
 当然伟大的Zend内核还提供了人性化的处理方式
-static const  zend_module_dep mysqli_deps[] = {
+static const  zend_module_dep deps[] = {
 	  ZEND_MOD_REQUIRED("standard")
 	  ZEND_MOD_END
 };
@@ -51,4 +51,18 @@ static const  zend_module_dep mysqli_deps[] = {
 #define ZEND_MOD_REQUIRED(name)		ZEND_MOD_REQUIRED_EX(name, NULL, NULL)
 #define ZEND_MOD_END { NULL, NULL, NULL, 0 }
 
+// 注册依赖数组到 zend_module_entry 中
+	test_module_entry.deps = deps;
+或者
+	zend_module_entry test_module_entry = {
+		STANDARD_MODULE_HEADER,
+		...
+	};
+	改成
+	zend_module_entry test_module_entry = {
+		STANDARD_MODULE_HEADER_EX, NULL,
+		deps,
+		...
+	};
+2中写法看着不同，但本质是一样的
 ```
