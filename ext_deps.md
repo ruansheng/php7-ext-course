@@ -51,7 +51,7 @@ static const  zend_module_dep deps[] = {
 #define ZEND_MOD_REQUIRED(name)		ZEND_MOD_REQUIRED_EX(name, NULL, NULL)
 #define ZEND_MOD_END { NULL, NULL, NULL, 0 }
 
-// 注册依赖数组到 zend_module_entry 中
+// 注册依赖数组到 zend_module_entry 中，2中写法看着不同，但本质是一样的
 	test_module_entry.deps = deps;
 或者
 	zend_module_entry test_module_entry = {
@@ -64,5 +64,4 @@ static const  zend_module_dep deps[] = {
 		deps,
 		...
 	};
-2中写法看着不同，但本质是一样的
 ```
