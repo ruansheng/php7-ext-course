@@ -86,3 +86,16 @@ PHP_MINIT_FUNCTION(test)
 
 到这来，php.ini的解析就已经完成了
 ```
+
+### 扩展中读取php.ini配置
+```
+// 在扩展中定义一个函数
+PHP_FUNCTION(test_ext_ini)
+{
+	RETURN_LONG(TEST_G(global_value));
+}
+
+// 测试
+php -r 'var_dump(test_ext_ini());'
+结果: int(42)
+```
