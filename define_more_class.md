@@ -1,4 +1,5 @@
 ## 扩展中定义多个类
+这里还是以test扩展为例来说明
 
 ### 在同一个.c文件中定义多个类
 ```
@@ -42,3 +43,84 @@ object(TestB)#1 (0) {
 ```
 
 ### 更优雅的定义方式
+```
+// 在php_test.h 中定义几个宏，用来实现多文件关联
+#define PMC_STARTUP_FUNCTION(module) ZEND_MINIT_FUNCTION(pmc_##module)
+#define PMC_STARTUP(module) ZEND_MODULE_STARTUP_N(pmc_##module)(INIT_FUNC_ARGS_PASSTHRU)
+#define PMC_RINIT_FUNCTION(module) ZEND_RINIT_FUNCTION(pmc_##module)
+```
+
+```
+// 创建第一个类的test_util.h文件
+#ifndef PMC_UTIL_H
+#define PMC_UTIL_H
+extern zend_class_entry *test_util_ce;
+TEST_STARTUP_FUNCTION(util);
+#endif //PMC_UTIL_H
+
+// 创建第一个类的test_util.c文件
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "php.h"
+
+#include "php_test.h"
+#include "test_util.h"
+
+zend_class_entry *test_util_ce;
+
+PHP_METHOD(test_util, show);
+
+/** {{{ test_util_methods
+*/
+zend_function_entry test_util_methods[] = {
+        PHP_ME(test_util, show, NULL, ZEND_ACC_PUBLIC)
+        {NULL, NULL, NULL}
+};
+/* }}} */
+
+/** {{{ proto public TestUtil::show()
+*/
+PHP_METHOD(test_util, show) {
+    php_printf("hello util!");
+}
+/* }}} */
+
+PMC_STARTUP_FUNCTION(util){
+        zend_class_entry ce;
+
+        INIT_CLASS_ENTRY(ce, "TestUtil", test_util_methods);
+        test_util_ce = zend_register_internal_class(&ce);
+
+        return SUCCESS;
+}
+```
+上面第一个类就和扩展主文件分离了
+
+```
+// 在php_test.c 中引入test_util.h文件
+#include "pmc_util.h"
+```
+
+然后只需要在扩展主文件test.c中通过前面定义的宏来加载这个分离的类
+```
+PHP_MINIT_FUNCTION(pmc)
+{
+	PMC_STARTUP(util);
+
+	return SUCCESS;
+}
+```
+
+最后需要注意的是: 如果一个扩展中使用了多个.c文件，则需要在config.m4中做相应的修改
+```
+PHP_NEW_EXTENSION(pmc,
+    test.c \
+    test_util.c,
+    $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+    
+// 这里如果有多个.c文件，则需要都加进去，不加进去在运行时则会报错
+// .c文件直接以空格分隔
+```
+
