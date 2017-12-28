@@ -45,9 +45,9 @@ object(TestB)#1 (0) {
 ### 更优雅的定义方式
 ```
 // 在php_test.h 中定义几个宏，用来实现多文件关联
-#define PMC_STARTUP_FUNCTION(module) ZEND_MINIT_FUNCTION(pmc_##module)
-#define PMC_STARTUP(module) ZEND_MODULE_STARTUP_N(pmc_##module)(INIT_FUNC_ARGS_PASSTHRU)
-#define PMC_RINIT_FUNCTION(module) ZEND_RINIT_FUNCTION(pmc_##module)
+#define TEST_STARTUP_FUNCTION(module) ZEND_MINIT_FUNCTION(pmc_##module)
+#define TEST_STARTUP(module) ZEND_MODULE_STARTUP_N(pmc_##module)(INIT_FUNC_ARGS_PASSTHRU)
+#define TEST_RINIT_FUNCTION(module) ZEND_RINIT_FUNCTION(pmc_##module)
 ```
 
 ```
@@ -100,14 +100,14 @@ PMC_STARTUP_FUNCTION(util){
 
 ```
 // 在php_test.c 中引入test_util.h文件
-#include "pmc_util.h"
+#include "test_util.h"
 ```
 
 然后只需要在扩展主文件test.c中通过前面定义的宏来加载这个分离的类
 ```
 PHP_MINIT_FUNCTION(pmc)
 {
-	PMC_STARTUP(util);
+	TEST_STARTUP(util);
 
 	return SUCCESS;
 }
