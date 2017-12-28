@@ -52,11 +52,11 @@ object(TestB)#1 (0) {
 
 ```
 // 创建第一个类的test_util.h文件
-#ifndef PMC_UTIL_H
-#define PMC_UTIL_H
+#ifndef TEST_UTIL_H
+#define TEST_UTIL_H
 extern zend_class_entry *test_util_ce;
 TEST_STARTUP_FUNCTION(util);
-#endif //PMC_UTIL_H
+#endif //TEST_UTIL_H
 
 // 创建第一个类的test_util.c文件
 #ifdef HAVE_CONFIG_H
@@ -123,4 +123,4 @@ PHP_NEW_EXTENSION(pmc,
 // 这里如果有多个.c文件，则需要都加进去，不加进去在运行时则会报错
 // .c文件直接以空格分隔
 ```
-
+需要多个类的话依葫芦画瓢去添加对应的.h、.c文件就可以了
