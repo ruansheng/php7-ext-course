@@ -31,7 +31,23 @@ PHP_MINIT_FUNCTION(test)
 #define ZEND_NS_NAME(ns, name)			ns "\\" name
 
 INIT_NS_CLASS_ENTRY 最终也调用 INIT_CLASS_ENTRY 
-由上面可以看出，命名空间只是给常量名前面加了一个前缀，用 "\\" 分隔，其他的都和不带命名空间的类一样的处理方式，这里就不做例子的特殊说明
+由上面可以看出，命名空间只是给常量名前面加了一个前缀，用 "\\" 分隔，其他的都和不带命名空间的类一样的处理方式
+
+// 具体例子
+PHP_MINIT_FUNCTION(test)
+{
+	zend_class_entry ce;
+	INIT_NS_CLASS_ENTRY(ce, "test", "Mytest", test_methods);
+	my_test_ce = zend_register_internal_class(&ce);  
+
+	return SUCCESS;
+}
+
+测试:
+php -r 'var_dump(new test\Mytest());'
+输出:  Mytest __construct
+      object(test\Mytest)#1 (0) {
+      }
 ```
 
 ### 定义命名空间的函数
