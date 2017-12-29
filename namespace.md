@@ -63,34 +63,30 @@ php -r 'var_dump(test\Test::VERSION);'
 前面讲过不带命名空间的函数的注册，这里来看一下命名空间下的函数的注册
 
 // Zend/zend_API.h 
-#define ZEND_NAMED_FE(zend_name, name, arg_info)    ZEND_FENTRY(zend_name, name, arg_info, 0)
 #define ZEND_FE(name, arg_info)			    ZEND_FENTRY(name, ZEND_FN(name), arg_info, 0)
-#define ZEND_DEP_FE(name, arg_info)                 ZEND_FENTRY(name, ZEND_FN(name), arg_info, ZEND_ACC_DEPRECATED)
+#define ZEND_NS_FE(ns, name, arg_info)		    ZEND_NS_FENTRY(ns, name, ZEND_FN(name), arg_info, 0)
 
+#define ZEND_NS_FENTRY(ns, zend_name, name, arg_info, flags)		ZEND_RAW_FENTRY(ZEND_NS_NAME(ns, #zend_name), name, arg_info, flags)
 #define ZEND_FN(name) zif_##name
-#define ZEND_FENTRY(zend_name, name, arg_info, flags)	{ #zend_name, name, arg_info, (uint32_t) (sizeof(arg_info)/sizeof(struct _zend_internal_arg_info)-1), flags },
+#define ZEND_RAW_FENTRY(zend_name, name, arg_info, flags)   { zend_name, name, arg_info, (uint32_t) (sizeof(arg_info)/sizeof(struct _zend_internal_arg_info)-1), flags },
+#define ZEND_NS_NAME(ns, name)			ns "\\" name
 
-ZEND_FE : 注册普通函数
-ZEND_NAMED_FE : 注册命名空间函数
-ZEND_DEP_FE : 注册不推荐使用的函数，这个在IDE的PHP代码中表现出一个函数中间有条线划了，表示这个函数不推荐使用
-
-// 定义函数的时候和不带命名空间的也有点差别
-#define ZEND_FUNCTION(name)			ZEND_NAMED_FUNCTION(ZEND_FN(name))
-#define ZEND_NAMED_FUNCTION(name)		void name(INTERNAL_FUNCTION_PARAMETERS)
+ZEND_FE用来注册普通函数，ZEND_NS_FE定义命名空间函数，可见其实命名空间就是把函数名加上前缀作为命名空间函数
 
 看一下具体怎么注册的:
-PHP_NAMED_FUNCTION(echo_hello)
+PHP_FUNCTION(echo_hello)
 {
-	php_printf("ns echo_hello");
+	php_printf("ns echo_hello\n");
 }
 
 const zend_function_entry test_functions[] = {
-	PHP_NAMED_FE(test, echo_hello,	NULL)	
+	ZEND_NS_FE(test, PHP_FN(echo_hello),	NULL)
 	PHP_FE_END
 };
 
 测试:
-
+php -r 'test\echo_hello("hello");'
+输出: ns echo_hello
 ```
 
 ### 定义命名空间的常量
