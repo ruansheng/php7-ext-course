@@ -30,7 +30,7 @@
 
 [12. 定义接口](./define_interface.md)
 
-[13. 类常量](./class_constant.md)
+[13. 类常量/接口常量](./class_interface_constant.md)
 
 [14. 类成员方法](./class_method.md)
 
