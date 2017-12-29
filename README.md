@@ -30,15 +30,15 @@
 
 [12. 定义接口](./define_interface.md)
 
-[13. 扩展中定义多个类](./define_more_class.md)
+[13. 类常量](./class_constant.md)
 
-[14. 类继承父类](./class_extends.md)
+[14. 类成员方法](./class_method.md)
 
-[15. 类实现接口](./class_implements.md)
+[15. 扩展中定义多个类](./define_more_class.md)
 
-[16. 类常量](./class_constant.md)
+[16. 类继承父类](./class_extends.md)
 
-[17. 类成员方法](./class_method.md)
+[17. 类实现接口](./class_implements.md)
 
 [18. 扩展中调用函数](./call_function.md)
 
