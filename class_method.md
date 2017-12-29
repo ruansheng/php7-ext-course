@@ -34,15 +34,15 @@
 ### 具体用法
 ```
 const zend_function_entry 	test_methods[] = {
-		PHP_ME(test, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-		ZEND_ABSTRACT_ME(test, abstract_func, NULL)
+    PHP_ME(test, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+    ZEND_ABSTRACT_ME(test, abstract_func, NULL)
     PHP_ME(test, public_func, NULL, ZEND_ACC_PUBLIC)
-		PHP_ME(test, private_func, NULL, ZEND_ACC_PRIVATE)
+    PHP_ME(test, private_func, NULL, ZEND_ACC_PRIVATE)
     PHP_ME(test, protected_func, NULL, ZEND_ACC_PROTECTED)
     PHP_ME(test, static_func, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)  // 这里可以有几种修饰方式共用
     PHP_ME(test, abstract_func, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT) // 这里可以有几种修饰方式共用
     PHP_ME(test, abstract_func, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL) // 这里可以有几种修饰方式共用
     PHP_ME(test, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR)
-		{NULL, NULL, NULL}
+    {NULL, NULL, NULL}
 };
 ```
