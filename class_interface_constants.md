@@ -2,7 +2,7 @@
 1. 类常量在PHP中可以通过 const 定义
 2. 类常量和普通常量一样，定义之后就不能被修改
 
-### 类常量\接口常量的访问
+### 类常量/接口常量的访问
 1. ClassName::ConstantName InteraceName::ConstantName
 2. self::ConstantName 这种访问方式只能在类自身内部
 
