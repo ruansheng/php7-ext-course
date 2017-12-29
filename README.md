@@ -44,7 +44,9 @@
 
 [19. 扩展中调用方法](./call_method.md)
 
-[20. 扩展之间的依赖](./ext_deps.md)
+[20. 命名空间](./namespace.md)
 
-[21. GDB调试扩展](./gdb_debug.md)
+[21. 扩展之间的依赖](./ext_deps.md)
+
+[22. GDB调试扩展](./gdb_debug.md)
 
