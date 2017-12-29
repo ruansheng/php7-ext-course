@@ -32,4 +32,21 @@ PHP 命名空间提供了一种将相关的类、函数和常量组合到一起�
 #define REGISTER_NS_LONG_CONSTANT(ns, name, lval, flags)  zend_register_long_constant(ZEND_NS_NAME(ns, name), sizeof(ZEND_NS_NAME(ns, name))-1, (lval), (flags), module_number)
 
 由上面可以看出，命名空间只是给常量名前面加了一个前缀，用 "\\" 分隔，其他的都和不带命名空间的常量一样的处理方式
+
+看一下具体怎么注册的:
+PHP_MINIT_FUNCTION(test)
+{
+    REGISTER_LONG_CONSTANT("CODE", 10, CONST_CS | CONST_PERSISTENT);
+	  REGISTER_NS_LONG_CONSTANT("test", "NSCODE", 11, CONST_CS | CONST_PERSISTENT);
+  	
+    return SUCCESS;
+}
+
+测试:
+php -r 'var_dump(CODE);'
+输出: int(10)
+
+php -r 'var_dump(test\NSCODE);'
+输出: int(11)
+
 ```
