@@ -27,7 +27,7 @@ PHP 命名空间提供了一种将相关的类、函数和常量组合到一起�
 // Zend/zend_API.h
 #define ZEND_NS_NAME(ns, name)			ns "\\" name
 
-拿注册Long类型的来看
+拿注册Long类型的常量来看
 #define REGISTER_LONG_CONSTANT(name, lval, flags)  zend_register_long_constant((name), sizeof(name)-1, (lval), (flags), module_number)
 #define REGISTER_NS_LONG_CONSTANT(ns, name, lval, flags)  zend_register_long_constant(ZEND_NS_NAME(ns, name), sizeof(ZEND_NS_NAME(ns, name))-1, (lval), (flags), module_number)
 
