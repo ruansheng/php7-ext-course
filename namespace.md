@@ -40,6 +40,11 @@ PHP_MINIT_FUNCTION(test)
 	INIT_NS_CLASS_ENTRY(ce, "test", "Mytest", test_methods);
 	my_test_ce = zend_register_internal_class(&ce);  
 
+	// 这里顺便注册一个类常量，可以看到类常量也是用带命名空间的类来访问，同理:类成员、成员方法也是一样的
+	zval zv_version;
+  	ZVAL_PSTRING(&zv_version, "1.0.0");
+  	zend_declare_class_constant(ce, "VERSION", sizeof("VERSION") - 1, &zv_version);
+
 	return SUCCESS;
 }
 
@@ -48,6 +53,9 @@ php -r 'var_dump(new test\Mytest());'
 输出:  Mytest __construct
       object(test\Mytest)#1 (0) {
       }
+      
+php -r 'var_dump(test\Test::VERSION);'
+输出:  string(5) "1.0.0"      
 ```
 
 ### 定义命名空间的函数
