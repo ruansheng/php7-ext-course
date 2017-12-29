@@ -5,7 +5,7 @@
 3. protected method 被声明为protected的成员方法，只允许该类的子类进行访问
 4. static method 静态方法，不需要实例化就可以使用 ClassName::staticMethodName()
 5. final method 表示方法不能被重写
-6. abstract method 表示方法不能有实现，只有声明
+6. abstract method 表示方法不能有实现，只有声明，其所在的类也不能被实例化
 
 ### 定义成员方法
 ```
