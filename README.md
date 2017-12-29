@@ -32,21 +32,23 @@
 
 [13. 类常量/接口常量](./class_interface_constants.md)
 
-[14. 类成员方法](./class_method.md)
+[14. 类成员变量](./class_var.md)
 
-[15. 扩展中定义多个类](./define_more_class.md)
+[15. 类成员方法](./class_method.md)
 
-[16. 类继承父类](./class_extends.md)
+[16. 扩展中定义多个类](./define_more_class.md)
 
-[17. 类实现接口](./class_implements.md)
+[17. 类继承父类](./class_extends.md)
 
-[18. 扩展中调用函数](./call_function.md)
+[18. 类实现接口](./class_implements.md)
 
-[19. 扩展中调用方法](./call_method.md)
+[19. 扩展中调用函数](./call_function.md)
 
-[20. 命名空间](./namespace.md)
+[20. 扩展中调用方法](./call_method.md)
 
-[21. 扩展之间的依赖](./ext_deps.md)
+[21. 命名空间](./namespace.md)
 
-[22. GDB调试扩展](./gdb_debug.md)
+[22. 扩展之间的依赖](./ext_deps.md)
+
+[23. GDB调试扩展](./gdb_debug.md)
 
