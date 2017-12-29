@@ -10,6 +10,29 @@ PHP 命名空间提供了一种将相关的类、函数和常量组合到一起�
 3. 常量
 
 ### 定义命名空间的类
+```
+前面也讲过注册不带命名空间的类
+PHP_MINIT_FUNCTION(test)
+{
+	zend_class_entry ce;
+	INIT_CLASS_ENTRY(ce, "Mytest", test_methods);
+	my_test_ce = zend_register_internal_class(&ce);  
+
+	return SUCCESS;
+}
+
+其实带命名空间的类和不带命名空间的类，在注册的时候差别很小，把 INIT_CLASS_ENTRY 换成 INIT_NS_CLASS_ENTRY，加个命名空间参数即可
+
+// Zend/zend_API.h
+#define INIT_NS_CLASS_ENTRY(class_container, ns, class_name, functions) \
+	INIT_CLASS_ENTRY(class_container, ZEND_NS_NAME(ns, class_name), functions)
+#define INIT_CLASS_ENTRY(class_container, class_name, functions) \
+	INIT_OVERLOADED_CLASS_ENTRY(class_container, class_name, functions, NULL, NULL, NULL)
+#define ZEND_NS_NAME(ns, name)			ns "\\" name
+
+INIT_NS_CLASS_ENTRY 最终也调用 INIT_CLASS_ENTRY 
+由上面可以看出，命名空间只是给常量名前面加了一个前缀，用 "\\" 分隔，其他的都和不带命名空间的类一样的处理方式，这里就不做例子的特殊说明
+```
 
 ### 定义命名空间的函数
 
@@ -37,7 +60,7 @@ PHP 命名空间提供了一种将相关的类、函数和常量组合到一起�
 PHP_MINIT_FUNCTION(test)
 {
     REGISTER_LONG_CONSTANT("CODE", 10, CONST_CS | CONST_PERSISTENT);
-	  REGISTER_NS_LONG_CONSTANT("test", "NSCODE", 11, CONST_CS | CONST_PERSISTENT);
+    REGISTER_NS_LONG_CONSTANT("test", "NSCODE", 11, CONST_CS | CONST_PERSISTENT);
   	
     return SUCCESS;
 }
