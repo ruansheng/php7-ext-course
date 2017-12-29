@@ -35,6 +35,35 @@
 #define ZEND_ACC_DTOR		0x4000
 ```
 
+### 成员方法参数定义
+```
+ZEND_BEGIN_ARG_INFO_EX(arginfo_public_func_, 0, 0, 3)
+	ZEND_ARG_INFO(0, arg1)
+    ZEND_ARG_INFO(0, arg2)
+    ZEND_ARG_INFO(0, arg3)
+ZEND_END_ARG_INFO()
+
+// Zend/zend_API.h
+#define ZEND_BEGIN_ARG_INFO_EX(name, _unused, return_reference, required_num_args)	\
+	static const zend_internal_arg_info name[] = { \
+		{ (const char*)(zend_uintptr_t)(required_num_args), 0, return_reference, 0 },
+#define ZEND_BEGIN_ARG_INFO(name, _unused)	\
+	ZEND_BEGIN_ARG_INFO_EX(name, 0, ZEND_RETURN_VALUE, -1)
+#define ZEND_END_ARG_INFO()		};
+
+#define ZEND_ARG_INFO(pass_by_ref, name)                             { #name, 0, pass_by_ref, 0},
+
+宏展开:
+static const zend_internal_arg_info name[] = {
+		{ (const char*)(zend_uintptr_t)(required_num_args), 0, return_reference, 0 },
+        { #name, 0, pass_by_ref, 0},
+};
+可见也是对结构体数组的初始化，这样的操作在PHP中实在是太多了
+    
+使用的时候:
+PHP_ME(test, public_func, arginfo_public_func_, ZEND_ACC_PUBLIC)
+```
+
 ### 具体用法
 ```
 const zend_function_entry 	test_methods[] = {
