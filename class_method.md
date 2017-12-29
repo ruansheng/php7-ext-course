@@ -9,6 +9,10 @@
 
 ### 定义成员方法
 ```
+// main/php.h
+#define PHP_ME          ZEND_ME
+#define PHP_ABSTRACT_ME ZEND_ABSTRACT_ME
+
 // Zend/zend_API.h
 #define ZEND_ME(classname, name, arg_info, flags)	ZEND_FENTRY(name, ZEND_MN(classname##_##name), arg_info, flags)
 #define ZEND_ABSTRACT_ME(classname, name, arg_info)	ZEND_FENTRY(name, NULL, arg_info, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
@@ -35,7 +39,7 @@
 ```
 const zend_function_entry 	test_methods[] = {
     PHP_ME(test, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-    ZEND_ABSTRACT_ME(test, abstract_func, NULL)
+    PHP_ABSTRACT_ME(test, abstract_func, NULL)
     PHP_ME(test, public_func, NULL, ZEND_ACC_PUBLIC)
     PHP_ME(test, private_func, NULL, ZEND_ACC_PRIVATE)
     PHP_ME(test, protected_func, NULL, ZEND_ACC_PROTECTED)
