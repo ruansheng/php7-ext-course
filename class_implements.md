@@ -33,6 +33,16 @@ int num_interfaces 实现的接口数量，这个参数和后面的'...' 参数�
 ... 这是一个可变参数，如果 num_interfaces=1，那后面就传一个接口的zend_class_entry *变量，num_interfaces=2，就传2个，这样一个类就可以实现多个接口
 ```
 
+### ZEND_ABSTRACT_ME 宏
+```
+看到 ZEND_ABSTRACT_ME 宏是不是就想起 PHP_ME 宏，看名字就能猜出是做什么用的吧
+在abstract class 中也是用 ZEND_ABSTRACT_ME 来定义abstract method 的
+
+// Zend/zend_api.h
+#define ZEND_ME(classname, name, arg_info, flags)	ZEND_FENTRY(name, ZEND_MN(classname##_##name), arg_info, flags)
+#define ZEND_ABSTRACT_ME(classname, name, arg_info)	ZEND_FENTRY(name, NULL, arg_info, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT)
+```
+
 ### 实现接口
 ```
 zend_class_entry * my_test_a_ce;
