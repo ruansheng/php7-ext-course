@@ -38,7 +38,7 @@
 ### 成员方法参数定义
 ```
 ZEND_BEGIN_ARG_INFO_EX(arginfo_public_func_, 0, 0, 3)
-	ZEND_ARG_INFO(0, arg1)
+    ZEND_ARG_INFO(0, arg1)
     ZEND_ARG_INFO(0, arg2)
     ZEND_ARG_INFO(0, arg3)
 ZEND_END_ARG_INFO()
@@ -55,7 +55,7 @@ ZEND_END_ARG_INFO()
 
 宏展开:
 static const zend_internal_arg_info name[] = {
-		{ (const char*)(zend_uintptr_t)(required_num_args), 0, return_reference, 0 },
+	{ (const char*)(zend_uintptr_t)(required_num_args), 0, return_reference, 0 },
         { #name, 0, pass_by_ref, 0},
 };
 可见也是对结构体数组的初始化，这样的操作在PHP中实在是太多了
