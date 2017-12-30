@@ -9,7 +9,7 @@ PHP语言中的变量有类型，同样在PHP内核中变量也是有类型的
 
 ### PHP7 zval
 ```
-// Zend/zend_types
+// Zend/zend_types.h
 typedef struct _zval_struct     zval;
 
 struct _zval_struct {
@@ -68,6 +68,214 @@ zend_array *zarr;
 ...
 ```
 
+### 变量初始化
+下面这些宏定义就是为zval变量赋值，虽然可以手动来初始化，但还是推荐用内核提供的方式来处理
+因为初始化并非只是设置zend_value，还好对zval的其它字段设置
+```
+// Zend/zend_types.h
+#define ZVAL_UNDEF(z) do {				\
+		Z_TYPE_INFO_P(z) = IS_UNDEF;	\
+	} while (0)
+
+#define ZVAL_NULL(z) do {				\
+		Z_TYPE_INFO_P(z) = IS_NULL;		\
+	} while (0)
+
+#define ZVAL_FALSE(z) do {				\
+		Z_TYPE_INFO_P(z) = IS_FALSE;	\
+	} while (0)
+
+#define ZVAL_TRUE(z) do {				\
+		Z_TYPE_INFO_P(z) = IS_TRUE;		\
+	} while (0)
+
+#define ZVAL_BOOL(z, b) do {			\
+		Z_TYPE_INFO_P(z) =				\
+			(b) ? IS_TRUE : IS_FALSE;	\
+	} while (0)
+
+#define ZVAL_LONG(z, l) {				\
+		zval *__z = (z);				\
+		Z_LVAL_P(__z) = l;				\
+		Z_TYPE_INFO_P(__z) = IS_LONG;	\
+	}
+
+#define ZVAL_DOUBLE(z, d) {				\
+		zval *__z = (z);				\
+		Z_DVAL_P(__z) = d;				\
+		Z_TYPE_INFO_P(__z) = IS_DOUBLE;	\
+	}
+
+#define ZVAL_STR(z, s) do {						\
+		zval *__z = (z);						\
+		zend_string *__s = (s);					\
+		Z_STR_P(__z) = __s;						\
+		/* interned strings support */			\
+		Z_TYPE_INFO_P(__z) = ZSTR_IS_INTERNED(__s) ? \
+			IS_INTERNED_STRING_EX : 			\
+			IS_STRING_EX;						\
+	} while (0)
+
+#define ZVAL_INTERNED_STR(z, s) do {				\
+		zval *__z = (z);							\
+		zend_string *__s = (s);						\
+		Z_STR_P(__z) = __s;							\
+		Z_TYPE_INFO_P(__z) = IS_INTERNED_STRING_EX;	\
+	} while (0)
+
+#define ZVAL_NEW_STR(z, s) do {					\
+		zval *__z = (z);						\
+		zend_string *__s = (s);					\
+		Z_STR_P(__z) = __s;						\
+		Z_TYPE_INFO_P(__z) = IS_STRING_EX;		\
+	} while (0)
+
+#define ZVAL_STR_COPY(z, s) do {						\
+		zval *__z = (z);								\
+		zend_string *__s = (s);							\
+		Z_STR_P(__z) = __s;								\
+		/* interned strings support */					\
+		if (ZSTR_IS_INTERNED(__s)) {							\
+			Z_TYPE_INFO_P(__z) = IS_INTERNED_STRING_EX;	\
+		} else {										\
+			GC_REFCOUNT(__s)++;							\
+			Z_TYPE_INFO_P(__z) = IS_STRING_EX;			\
+		}												\
+	} while (0)
+
+#define ZVAL_ARR(z, a) do {						\
+		zval *__z = (z);						\
+		Z_ARR_P(__z) = (a);						\
+		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;		\
+	} while (0)
+
+#define ZVAL_NEW_ARR(z) do {									\
+		zval *__z = (z);										\
+		zend_array *_arr =										\
+		(zend_array *) emalloc(sizeof(zend_array));				\
+		Z_ARR_P(__z) = _arr;									\
+		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;						\
+	} while (0)
+
+#define ZVAL_NEW_PERSISTENT_ARR(z) do {							\
+		zval *__z = (z);										\
+		zend_array *_arr =										\
+		(zend_array *) malloc(sizeof(zend_array));				\
+		Z_ARR_P(__z) = _arr;									\
+		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;						\
+	} while (0)
+
+#define ZVAL_OBJ(z, o) do {						\
+		zval *__z = (z);						\
+		Z_OBJ_P(__z) = (o);						\
+		Z_TYPE_INFO_P(__z) = IS_OBJECT_EX;		\
+	} while (0)
+
+#define ZVAL_RES(z, r) do {						\
+		zval *__z = (z);						\
+		Z_RES_P(__z) = (r);						\
+		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;	\
+	} while (0)
+
+#define ZVAL_NEW_RES(z, h, p, t) do {							\
+		zend_resource *_res =									\
+		(zend_resource *) emalloc(sizeof(zend_resource));		\
+		zval *__z;												\
+		GC_REFCOUNT(_res) = 1;									\
+		GC_TYPE_INFO(_res) = IS_RESOURCE;						\
+		_res->handle = (h);										\
+		_res->type = (t);										\
+		_res->ptr = (p);										\
+		__z = (z);												\
+		Z_RES_P(__z) = _res;									\
+		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;					\
+	} while (0)
+
+#define ZVAL_NEW_PERSISTENT_RES(z, h, p, t) do {				\
+		zend_resource *_res =									\
+		(zend_resource *) malloc(sizeof(zend_resource));		\
+		zval *__z;												\
+		GC_REFCOUNT(_res) = 1;									\
+		GC_TYPE_INFO(_res) = IS_RESOURCE;						\
+		_res->handle = (h);										\
+		_res->type = (t);										\
+		_res->ptr = (p);										\
+		__z = (z);												\
+		Z_RES_P(__z) = _res;									\
+		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;					\
+	} while (0)
+
+#define ZVAL_REF(z, r) do {										\
+		zval *__z = (z);										\
+		Z_REF_P(__z) = (r);										\
+		Z_TYPE_INFO_P(__z) = IS_REFERENCE_EX;					\
+	} while (0)
+
+#define ZVAL_NEW_EMPTY_REF(z) do {								\
+		zend_reference *_ref =									\
+		(zend_reference *) emalloc(sizeof(zend_reference));		\
+		GC_REFCOUNT(_ref) = 1;									\
+		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
+		Z_REF_P(z) = _ref;										\
+		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
+	} while (0)
+
+#define ZVAL_NEW_REF(z, r) do {									\
+		zend_reference *_ref =									\
+		(zend_reference *) emalloc(sizeof(zend_reference));		\
+		GC_REFCOUNT(_ref) = 1;									\
+		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
+		ZVAL_COPY_VALUE(&_ref->val, r);							\
+		Z_REF_P(z) = _ref;										\
+		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
+	} while (0)
+
+#define ZVAL_NEW_PERSISTENT_REF(z, r) do {						\
+		zend_reference *_ref =									\
+		(zend_reference *) malloc(sizeof(zend_reference));		\
+		GC_REFCOUNT(_ref) = 1;									\
+		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
+		ZVAL_COPY_VALUE(&_ref->val, r);							\
+		Z_REF_P(z) = _ref;										\
+		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
+	} while (0)
+
+#define ZVAL_NEW_AST(z, a) do {									\
+		zval *__z = (z);										\
+		zend_ast_ref *_ast =									\
+		(zend_ast_ref *) emalloc(sizeof(zend_ast_ref));			\
+		GC_REFCOUNT(_ast) = 1;									\
+		GC_TYPE_INFO(_ast) = IS_CONSTANT_AST;					\
+		_ast->ast = (a);										\
+		Z_AST_P(__z) = _ast;									\
+		Z_TYPE_INFO_P(__z) = IS_CONSTANT_AST_EX;				\
+	} while (0)
+
+#define ZVAL_INDIRECT(z, v) do {								\
+		Z_INDIRECT_P(z) = (v);									\
+		Z_TYPE_INFO_P(z) = IS_INDIRECT;							\
+	} while (0)
+
+#define ZVAL_PTR(z, p) do {										\
+		Z_PTR_P(z) = (p);										\
+		Z_TYPE_INFO_P(z) = IS_PTR;								\
+	} while (0)
+
+#define ZVAL_FUNC(z, f) do {									\
+		Z_FUNC_P(z) = (f);										\
+		Z_TYPE_INFO_P(z) = IS_PTR;								\
+	} while (0)
+
+#define ZVAL_CE(z, c) do {										\
+		Z_CE_P(z) = (c);										\
+		Z_TYPE_INFO_P(z) = IS_PTR;								\
+	} while (0)
+
+#define ZVAL_ERROR(z) do {				\
+		Z_TYPE_INFO_P(z) = _IS_ERROR;	\
+	} while (0)
+```
+
 ### 变量类型判断
 ```
 // Zend/zend_types
@@ -110,4 +318,5 @@ if(Z_TYPE_P(zvalp) != IS_ARRAY) {
   ...
 }
 ```
+
 
