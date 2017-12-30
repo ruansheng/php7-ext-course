@@ -179,6 +179,8 @@ static zend_always_inline zend_string *zend_string_alloc(size_t len, int persist
 但是对于string、array、obj...之类的数据必须要注意内存的释放
 在C语言中有malloc就必须有free，否则会造成内存泄露，特别是在php-fpm模型下，内存泄露会产生很大的影响
 
+zval_ptr_dtor(zval_ptr) 的宏参数是一个zval *
+
 // 内存释放宏
 #define zval_ptr_dtor(zval_ptr)   _zval_ptr_dtor((zval_ptr) ZEND_FILE_LINE_CC)
 
