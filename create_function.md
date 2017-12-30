@@ -74,8 +74,8 @@ typedef struct _zend_internal_arg_info {
 
 // 宏展开的结果
 static const zend_internal_arg_info arginfo_test_index[] = {
-		{ (const char*)(zend_uintptr_t)(1), 0, 0, 0 },
-    { "data", 0, 0, 0},
+	{ (const char*)(zend_uintptr_t)(1), 0, 0, 0 },
+	{ "data", 0, 0, 0},
 };
 
 ```
