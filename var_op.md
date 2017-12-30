@@ -173,6 +173,88 @@ static zend_always_inline zend_string *zend_string_alloc(size_t len, int persist
 3. 把zend_string*赋值给zval的value，具体表现为 (zval).value.str
 ```
 
+### zval内存释放
+```
+对与 long、double、bool 类型的数据，直接在zend_value中存储内容，不会存在从堆上分配内存
+但是对于string、array、obj...之类的数据必须要注意内存的释放
+在C语言中有malloc就必须有free，否则会造成内存泄露，特别是在php-fpm模型下，内存泄露会产生很大的影响
+
+// 内存释放宏
+#define zval_ptr_dtor(zval_ptr)   _zval_ptr_dtor((zval_ptr) ZEND_FILE_LINE_CC)
+
+ZEND_API void _zval_ptr_dtor_wrapper(zval *zval_ptr)
+{
+
+	i_zval_ptr_dtor(zval_ptr ZEND_FILE_LINE_CC);
+}
+
+static zend_always_inline void i_zval_ptr_dtor(zval *zval_ptr ZEND_FILE_LINE_DC)
+{
+	if (Z_REFCOUNTED_P(zval_ptr)) {
+		zend_refcounted *ref = Z_COUNTED_P(zval_ptr);
+		if (!--GC_REFCOUNT(ref)) {
+			_zval_dtor_func(ref ZEND_FILE_LINE_RELAY_CC);
+		} else {
+			gc_check_possible_root(ref);
+		}
+	}
+}
+
+#define GC_REFCOUNT(p)		(p)->gc.refcount
+
+ZEND_API void ZEND_FASTCALL _zval_dtor_func(zend_refcounted *p ZEND_FILE_LINE_DC)
+{
+	switch (GC_TYPE(p)) {
+		case IS_STRING:
+		case IS_CONSTANT: {
+				zend_string *str = (zend_string*)p;
+				CHECK_ZVAL_STRING_REL(str);
+				zend_string_free(str);
+				break;
+			}
+		case IS_ARRAY: {
+				zend_array *arr = (zend_array*)p;
+				zend_array_destroy(arr);
+				break;
+			}
+		case IS_CONSTANT_AST: {
+				zend_ast_ref *ast = (zend_ast_ref*)p;
+
+				zend_ast_destroy_and_free(ast->ast);
+				efree_size(ast, sizeof(zend_ast_ref));
+				break;
+			}
+		case IS_OBJECT: {
+				zend_object *obj = (zend_object*)p;
+
+				zend_objects_store_del(obj);
+				break;
+			}
+		case IS_RESOURCE: {
+				zend_resource *res = (zend_resource*)p;
+
+				/* destroy resource */
+				zend_list_free(res);
+				break;
+			}
+		case IS_REFERENCE: {
+				zend_reference *ref = (zend_reference*)p;
+
+				i_zval_ptr_dtor(&ref->val ZEND_FILE_LINE_RELAY_CC);
+				efree_size(ref, sizeof(zend_reference));
+				break;
+			}
+		default:
+			break;
+	}
+}
+
+可见释放内存的时候
+1. 首先获取zval的引用计数
+2. 引用计数减1，如果减完之后，refcount == 0，就认为是垃圾，就释放内存
+3. 释放内存的时候判断了zval变量的烈类型，不同类型做不同的处理
+```
+
 ### 变量类型判断
 ```
 // Zend/zend_types
