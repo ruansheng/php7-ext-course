@@ -73,54 +73,61 @@ zend_array *zarr;
 因为初始化并非只是设置zend_value，还好对zval的其它字段设置
 ```
 // Zend/zend_types.h
-#define ZVAL_UNDEF(z) do {				\
-		Z_TYPE_INFO_P(z) = IS_UNDEF;	\
+ZVAL_UNDEF(z)
+ZVAL_NULL(z)
+ZVAL_FALSE(z)
+ZVAL_TRUE(z) 
+ZVAL_BOOL(z, b)
+ZVAL_LONG(z, l)
+ZVAL_DOUBLE(z, d)
+ZVAL_STR(z, s)
+ZVAL_INTERNED_STR(z, s)
+ZVAL_NEW_STR(z, s)
+ZVAL_STR_COPY(z, s)
+ZVAL_ARR(z, a)
+ZVAL_NEW_ARR(z)
+ZVAL_NEW_PERSISTENT_ARR(z)
+ZVAL_OBJ(z, o)
+ZVAL_RES(z, r)
+ZVAL_NEW_RES(z, h, p, t)
+ZVAL_NEW_PERSISTENT_RES(z, h, p, t)
+ZVAL_REF(z, r)
+ZVAL_NEW_EMPTY_REF(z)
+ZVAL_NEW_REF(z, r)
+ZVAL_NEW_PERSISTENT_REF(z, r)
+ZVAL_NEW_AST(z, a)
+ZVAL_INDIRECT(z, v)
+ZVAL_PTR(z, p) 
+ZVAL_FUNC(z, f)
+ZVAL_CE(z, c) 
+ZVAL_ERROR(z)
+
+// Zend/zend_API.h
+ZVAL_STRINGL(z, s, l)
+ZVAL_STRING(z, s)
+ZVAL_EMPTY_STRING(z)
+ZVAL_PSTRINGL(z, s, l)
+ZVAL_PSTRING(z, s)
+ZVAL_EMPTY_PSTRING(z)
+ZVAL_ZVAL(z, zv, copy, dtor)
+
+上面这些宏的第一个参数都是zval *
+```
+
+### 分析ZVAL_STRING(z, s)
+```
+zval name;
+ZVAL_STRING(&name, "hello world");
+
+看下 ZVAL_STRING 具体做了什么事
+
+#define ZVAL_STRING(z, s) do {					\
+		const char *_s = (s);					\
+		ZVAL_STRINGL(z, _s, strlen(_s));		\
 	} while (0)
-
-#define ZVAL_NULL(z) do {				\
-		Z_TYPE_INFO_P(z) = IS_NULL;		\
-	} while (0)
-
-#define ZVAL_FALSE(z) do {				\
-		Z_TYPE_INFO_P(z) = IS_FALSE;	\
-	} while (0)
-
-#define ZVAL_TRUE(z) do {				\
-		Z_TYPE_INFO_P(z) = IS_TRUE;		\
-	} while (0)
-
-#define ZVAL_BOOL(z, b) do {			\
-		Z_TYPE_INFO_P(z) =				\
-			(b) ? IS_TRUE : IS_FALSE;	\
-	} while (0)
-
-#define ZVAL_LONG(z, l) {				\
-		zval *__z = (z);				\
-		Z_LVAL_P(__z) = l;				\
-		Z_TYPE_INFO_P(__z) = IS_LONG;	\
-	}
-
-#define ZVAL_DOUBLE(z, d) {				\
-		zval *__z = (z);				\
-		Z_DVAL_P(__z) = d;				\
-		Z_TYPE_INFO_P(__z) = IS_DOUBLE;	\
-	}
-
-#define ZVAL_STR(z, s) do {						\
-		zval *__z = (z);						\
-		zend_string *__s = (s);					\
-		Z_STR_P(__z) = __s;						\
-		/* interned strings support */			\
-		Z_TYPE_INFO_P(__z) = ZSTR_IS_INTERNED(__s) ? \
-			IS_INTERNED_STRING_EX : 			\
-			IS_STRING_EX;						\
-	} while (0)
-
-#define ZVAL_INTERNED_STR(z, s) do {				\
-		zval *__z = (z);							\
-		zend_string *__s = (s);						\
-		Z_STR_P(__z) = __s;							\
-		Z_TYPE_INFO_P(__z) = IS_INTERNED_STRING_EX;	\
+	
+#define ZVAL_STRINGL(z, s, l) do {				\
+		ZVAL_NEW_STR(z, zend_string_init(s, l, 0));		\
 	} while (0)
 
 #define ZVAL_NEW_STR(z, s) do {					\
@@ -130,150 +137,40 @@ zend_array *zarr;
 		Z_TYPE_INFO_P(__z) = IS_STRING_EX;		\
 	} while (0)
 
-#define ZVAL_STR_COPY(z, s) do {						\
-		zval *__z = (z);								\
-		zend_string *__s = (s);							\
-		Z_STR_P(__z) = __s;								\
-		/* interned strings support */					\
-		if (ZSTR_IS_INTERNED(__s)) {							\
-			Z_TYPE_INFO_P(__z) = IS_INTERNED_STRING_EX;	\
-		} else {										\
-			GC_REFCOUNT(__s)++;							\
-			Z_TYPE_INFO_P(__z) = IS_STRING_EX;			\
-		}												\
-	} while (0)
+#define Z_STR(zval)				(zval).value.str
+#define Z_STR_P(zval_p)				Z_STR(*(zval_p))
 
-#define ZVAL_ARR(z, a) do {						\
-		zval *__z = (z);						\
-		Z_ARR_P(__z) = (a);						\
-		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;		\
-	} while (0)
+static zend_always_inline zend_string *zend_string_init(const char *str, size_t len, int persistent)
+{
+	zend_string *ret = zend_string_alloc(len, persistent);
 
-#define ZVAL_NEW_ARR(z) do {									\
-		zval *__z = (z);										\
-		zend_array *_arr =										\
-		(zend_array *) emalloc(sizeof(zend_array));				\
-		Z_ARR_P(__z) = _arr;									\
-		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;						\
-	} while (0)
+	memcpy(ZSTR_VAL(ret), str, len);
+	ZSTR_VAL(ret)[len] = '\0';
+	return ret;
+}
 
-#define ZVAL_NEW_PERSISTENT_ARR(z) do {							\
-		zval *__z = (z);										\
-		zend_array *_arr =										\
-		(zend_array *) malloc(sizeof(zend_array));				\
-		Z_ARR_P(__z) = _arr;									\
-		Z_TYPE_INFO_P(__z) = IS_ARRAY_EX;						\
-	} while (0)
+static zend_always_inline zend_string *zend_string_alloc(size_t len, int persistent)
+{
+	zend_string *ret = (zend_string *)pemalloc(ZEND_MM_ALIGNED_SIZE(_ZSTR_STRUCT_SIZE(len)), persistent);
 
-#define ZVAL_OBJ(z, o) do {						\
-		zval *__z = (z);						\
-		Z_OBJ_P(__z) = (o);						\
-		Z_TYPE_INFO_P(__z) = IS_OBJECT_EX;		\
-	} while (0)
+	GC_REFCOUNT(ret) = 1;
+#if 1
+	/* optimized single assignment */
+	GC_TYPE_INFO(ret) = IS_STRING | ((persistent ? IS_STR_PERSISTENT : 0) << 8);
+#else
+	GC_TYPE(ret) = IS_STRING;
+	GC_FLAGS(ret) = (persistent ? IS_STR_PERSISTENT : 0);
+	GC_INFO(ret) = 0;
+#endif
+	zend_string_forget_hash_val(ret);
+	ZSTR_LEN(ret) = len;
+	return ret;
+}
 
-#define ZVAL_RES(z, r) do {						\
-		zval *__z = (z);						\
-		Z_RES_P(__z) = (r);						\
-		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;	\
-	} while (0)
-
-#define ZVAL_NEW_RES(z, h, p, t) do {							\
-		zend_resource *_res =									\
-		(zend_resource *) emalloc(sizeof(zend_resource));		\
-		zval *__z;												\
-		GC_REFCOUNT(_res) = 1;									\
-		GC_TYPE_INFO(_res) = IS_RESOURCE;						\
-		_res->handle = (h);										\
-		_res->type = (t);										\
-		_res->ptr = (p);										\
-		__z = (z);												\
-		Z_RES_P(__z) = _res;									\
-		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;					\
-	} while (0)
-
-#define ZVAL_NEW_PERSISTENT_RES(z, h, p, t) do {				\
-		zend_resource *_res =									\
-		(zend_resource *) malloc(sizeof(zend_resource));		\
-		zval *__z;												\
-		GC_REFCOUNT(_res) = 1;									\
-		GC_TYPE_INFO(_res) = IS_RESOURCE;						\
-		_res->handle = (h);										\
-		_res->type = (t);										\
-		_res->ptr = (p);										\
-		__z = (z);												\
-		Z_RES_P(__z) = _res;									\
-		Z_TYPE_INFO_P(__z) = IS_RESOURCE_EX;					\
-	} while (0)
-
-#define ZVAL_REF(z, r) do {										\
-		zval *__z = (z);										\
-		Z_REF_P(__z) = (r);										\
-		Z_TYPE_INFO_P(__z) = IS_REFERENCE_EX;					\
-	} while (0)
-
-#define ZVAL_NEW_EMPTY_REF(z) do {								\
-		zend_reference *_ref =									\
-		(zend_reference *) emalloc(sizeof(zend_reference));		\
-		GC_REFCOUNT(_ref) = 1;									\
-		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
-		Z_REF_P(z) = _ref;										\
-		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
-	} while (0)
-
-#define ZVAL_NEW_REF(z, r) do {									\
-		zend_reference *_ref =									\
-		(zend_reference *) emalloc(sizeof(zend_reference));		\
-		GC_REFCOUNT(_ref) = 1;									\
-		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
-		ZVAL_COPY_VALUE(&_ref->val, r);							\
-		Z_REF_P(z) = _ref;										\
-		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
-	} while (0)
-
-#define ZVAL_NEW_PERSISTENT_REF(z, r) do {						\
-		zend_reference *_ref =									\
-		(zend_reference *) malloc(sizeof(zend_reference));		\
-		GC_REFCOUNT(_ref) = 1;									\
-		GC_TYPE_INFO(_ref) = IS_REFERENCE;						\
-		ZVAL_COPY_VALUE(&_ref->val, r);							\
-		Z_REF_P(z) = _ref;										\
-		Z_TYPE_INFO_P(z) = IS_REFERENCE_EX;						\
-	} while (0)
-
-#define ZVAL_NEW_AST(z, a) do {									\
-		zval *__z = (z);										\
-		zend_ast_ref *_ast =									\
-		(zend_ast_ref *) emalloc(sizeof(zend_ast_ref));			\
-		GC_REFCOUNT(_ast) = 1;									\
-		GC_TYPE_INFO(_ast) = IS_CONSTANT_AST;					\
-		_ast->ast = (a);										\
-		Z_AST_P(__z) = _ast;									\
-		Z_TYPE_INFO_P(__z) = IS_CONSTANT_AST_EX;				\
-	} while (0)
-
-#define ZVAL_INDIRECT(z, v) do {								\
-		Z_INDIRECT_P(z) = (v);									\
-		Z_TYPE_INFO_P(z) = IS_INDIRECT;							\
-	} while (0)
-
-#define ZVAL_PTR(z, p) do {										\
-		Z_PTR_P(z) = (p);										\
-		Z_TYPE_INFO_P(z) = IS_PTR;								\
-	} while (0)
-
-#define ZVAL_FUNC(z, f) do {									\
-		Z_FUNC_P(z) = (f);										\
-		Z_TYPE_INFO_P(z) = IS_PTR;								\
-	} while (0)
-
-#define ZVAL_CE(z, c) do {										\
-		Z_CE_P(z) = (c);										\
-		Z_TYPE_INFO_P(z) = IS_PTR;								\
-	} while (0)
-
-#define ZVAL_ERROR(z) do {				\
-		Z_TYPE_INFO_P(z) = _IS_ERROR;	\
-	} while (0)
+由上可看出zval和zend_value是分开的，ZVAL_STRING(z, s)其实就是:
+1. 创建一个zend_string*变量
+2. 从堆上为zend_string*分配内存
+3. 把zend_string*赋值给zval的value，具体表现为 (zval).value.str
 ```
 
 ### 变量类型判断
