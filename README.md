@@ -14,7 +14,7 @@
 
 [4.&nbsp; 创建函数](./create_function.md)
 
-[5.&nbsp; 函数中变量的操作](./var_op.md)
+[5.&nbsp; 变量的操作](./var_op.md)
 
 [6.&nbsp; 解析函数参数](./function_params.md)
 
