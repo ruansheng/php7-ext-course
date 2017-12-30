@@ -1,4 +1,5 @@
 ## 类的继承
+PHP的类只允许继承一个父类
 
 ### 类继承
 之前在看定义类的时候用的是 zend_register_internal_class 函数，PHP中类只允许继承一个类
@@ -22,17 +23,17 @@ PHP_METHOD(TestA, __construct)
 
 PHP_METHOD(TestB, __construct)
 {
-  php_printf("TestB __construct\n");
+  	php_printf("TestB __construct\n");
 }
 
 const zend_function_entry 	test_a_methods[] = {
-		PHP_ME(TestA, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-		{NULL, NULL, NULL}
+	PHP_ME(TestA, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	{NULL, NULL, NULL}
 };
 
 const zend_function_entry 	test_b_methods[] = {
-		PHP_ME(TestB, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-		{NULL, NULL, NULL}
+	PHP_ME(TestB, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	{NULL, NULL, NULL}
 };
 
 PHP_MINIT_FUNCTION(test_ext)
@@ -68,8 +69,8 @@ PHP_METHOD(TestB, __construct)
 	php_printf("TestB __construct\n");
 	
 	zval *this_zval;
-    this_zval = getThis();
-    zend_call_method(&this_zval, my_test_a_ce, NULL, "__construct", sizeof("__construct") - 1, NULL, 0, NULL, NULL);
+    	this_zval = getThis();
+    	zend_call_method(&this_zval, my_test_a_ce, NULL, "__construct", sizeof("__construct") - 1, NULL, 0, NULL, NULL);
 }
 
 测试:
