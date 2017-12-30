@@ -103,6 +103,7 @@ php -r 'var_dump(test_ext_ini());'
 [test_ext]
 test.global_value = "1000"
 test.global_string = "ruansheng"
+
 再测试
 php -r 'var_dump(test_ext_ini());'
 结果: int(1000)
