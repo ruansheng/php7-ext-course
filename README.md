@@ -22,35 +22,35 @@
 
 [8.&nbsp; 扩展内存泄露检查](./memory_leaks.md)
 
-[9.&nbsp; 全局资源](./globals_ref.md)
+[9.&nbsp; GDB调试扩展](./gdb_debug.md)
 
-[10.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
+[10. 全局资源](./globals_ref.md)
 
-[11. 定义全局常量](./constant.md)
+[11. 为扩展新增php.ini配置项](./add_php_ini.md)
 
-[12. 定义类](./define_class.md)
+[12. 定义全局常量](./constant.md)
 
-[13. 定义接口](./define_interface.md)
+[13. 定义类](./define_class.md)
 
-[13. 类常量/接口常量](./class_interface_constants.md)
+[14. 定义接口](./define_interface.md)
 
-[14. 类成员变量](./class_var.md)
+[15. 类常量/接口常量](./class_interface_constants.md)
 
-[15. 类成员方法](./class_method.md)
+[16. 类成员变量](./class_var.md)
 
-[16. 扩展中定义多个类](./define_more_class.md)
+[17. 类成员方法](./class_method.md)
 
-[17. 类继承父类](./class_extends.md)
+[18. 扩展中定义多个类](./define_more_class.md)
 
-[18. 类实现接口](./class_implements.md)
+[19. 类继承父类](./class_extends.md)
 
-[19. 扩展中调用函数](./call_function.md)
+[20. 类实现接口](./class_implements.md)
 
-[20. 扩展中调用方法](./call_method.md)
+[21. 扩展中调用函数](./call_function.md)
 
-[21. 命名空间](./namespace.md)
+[22. 扩展中调用方法](./call_method.md)
 
-[22. 扩展之间的依赖](./ext_deps.md)
+[23. 命名空间](./namespace.md)
 
-[23. GDB调试扩展](./gdb_debug.md)
+[24. 扩展之间的依赖](./ext_deps.md)
 
