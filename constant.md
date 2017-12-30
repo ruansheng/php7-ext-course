@@ -1,4 +1,6 @@
 ## 定义全局常量
+在PHP中定义全局常量可以使用: define() 或者 const来定义
+define() 定义还可以设置是否大小写敏感
 
 ### 注册常量的宏
 PHP提供了很多对于不同类型常量注册的宏，宏定义在Zend/zend_constants.h中
