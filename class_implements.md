@@ -66,16 +66,16 @@ PHP_METHOD(TestB, dance)
 PHP_METHOD(InterfaceA, show);
 PHP_METHOD(InterfaceA, dance);
 const zend_function_entry 	test_a_methods[] = {
-		ZEND_ABSTRACT_ME(InterfaceA, show, NULL)
-		ZEND_ABSTRACT_ME(InterfaceA, dance, NULL)
-		{NULL, NULL, NULL}
+	ZEND_ABSTRACT_ME(InterfaceA, show, NULL)
+	ZEND_ABSTRACT_ME(InterfaceA, dance, NULL)
+	{NULL, NULL, NULL}
 };
 
 const zend_function_entry 	test_b_methods[] = {
-		PHP_ME(TestB, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-		PHP_ME(TestB, show, NULL, ZEND_ACC_PUBLIC)
-		PHP_ME(TestB, dance, NULL, ZEND_ACC_PUBLIC)
-		{NULL, NULL, NULL}
+	PHP_ME(TestB, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(TestB, show, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(TestB, dance, NULL, ZEND_ACC_PUBLIC)
+	{NULL, NULL, NULL}
 };
 
 PHP_MINIT_FUNCTION(test_ext)
