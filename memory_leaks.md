@@ -12,9 +12,11 @@ PHP是由C语言编写，PHP扩展中涉及到很多变量的操作都是对C语
 ```
 PHP源码编译的时候可以添加一个选项 --enable-debug，这样可以方便用GDB调试PHP内核代码
 PHP扩展编译可以添加选项--enable-debug，这样可以方便GDB调试扩展代码
+./configure ..  --enable-debug  ..
 
 上面两个都开启之后，在执行PHP代码的时候，如果发现扩展内存有泄露的地方，会输出提示
 值得注意的是不同的PHP执行模式，输出的信息会在不同的地方，在"错误日志"或者"标准输出"中
+./configure ..  --enable-debug  ..
 ```
 
 ### 内存泄露的例子
@@ -23,8 +25,8 @@ PHP_FUNCTION(mypow)
 {
 	zval name;
 	ZVAL_STRING(&name, "pow");
-
-  RETURN_TRUE;
+	
+	RETURN_TRUE;
 }
 
 测试:
@@ -46,7 +48,7 @@ PHP_FUNCTION(mypow)
 	zval_ptr_dtor(&call_func_name);
 	ZVAL_NULL(&call_func_name);
 	
-  RETURN_TRUE;
+	RETURN_TRUE;
 }
 
 测试:
