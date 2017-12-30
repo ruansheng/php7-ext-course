@@ -20,15 +20,17 @@
 
 [7.&nbsp; 函数/方法返回值](./function_method_return.md)
 
-[8.&nbsp; 全局资源](./globals_ref.md)
+[8.&nbsp; 扩展内存泄露检查](./memory_leaks.md)
 
-[9.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
+[9.&nbsp; 全局资源](./globals_ref.md)
 
-[10. 定义全局常量](./constant.md)
+[10.&nbsp; 为扩展新增php.ini配置项](./add_php_ini.md)
 
-[11. 定义类](./define_class.md)
+[11. 定义全局常量](./constant.md)
 
-[12. 定义接口](./define_interface.md)
+[12. 定义类](./define_class.md)
+
+[13. 定义接口](./define_interface.md)
 
 [13. 类常量/接口常量](./class_interface_constants.md)
 
