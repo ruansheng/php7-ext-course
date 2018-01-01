@@ -52,5 +52,9 @@
 
 [23. 命名空间](./namespace.md)
 
-[24. 扩展之间的依赖](./ext_deps.md)
+[24. 扩展中异常处理](./exception.md)
+
+[25. 扩展中加载执行php文件](./include.md)
+
+[26. 扩展之间的依赖](./ext_deps.md)
 
