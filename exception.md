@@ -66,7 +66,21 @@ PHP_FUNCTION(myexception)
 	zend_throw_exception(NULL, "This is my throw Exception", 601);
 }
 
-写测试用例:
+写测试用例1: 不捕获，程序会中断
+//exception.php
+<?php
+myexception();
+
+测试:
+php exception.php
+输出: 
+PHP Fatal error:  Uncaught Exception: This is my throw Exception in /root/php/exception1.php:2
+Stack trace:
+#0 /root/php/exception1.php(2): myexception()
+#1 {main}
+  thrown in /root/php/exception1.php on line 2
+
+写测试用例2: 捕获，程序可以优雅的继续执行下去
 //exception.php
 <?php
 try{
@@ -139,7 +153,7 @@ Stack trace:
 此时程序已经中断了
 
 
-写测试用例2: 捕获，程序不会中断
+写测试用例2: 捕获，程序可以优雅的继续执行下去
 //error.php
 <?php
 try{
