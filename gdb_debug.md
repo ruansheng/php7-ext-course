@@ -73,7 +73,6 @@ gcc 编译的时候加上-g参数，在PHP扩展的编译中提供了--enable-de
 ```
 vim /root/php/echo_hello.php
 <?php
-<?php
 echo_hello("test");
 ```
 
