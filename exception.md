@@ -116,4 +116,39 @@ ZEND_API ZEND_COLD void zend_throw_error(zend_class_entry *exception_ce, const c
 	efree(message);
 	va_end(va);
 }
+
+在PHP7中，抛出的错误也是可以被捕获到的
+从上面代码中可以看出:
+第一个参数 zend_class_entry *exception_ce 允许我们传一个异常类进去，这个类也可以是我们自定义的
+第二个参数 const char *format 传递一个描述错误的格式化字符串，类似于pintf()函数一样，可支持格式化符号
+第三个参数 ...，这里可以看出是一个可变参数，具体由const char *format格式化需要传的参数个数来决定
+
+// 具体测试例子
+PHP_FUNCTION(myexception) 
+{
+	zend_throw_error(NULL, "This is my throw Error in (%s)", "myexception");
+}
+
+写测试用例1: 不捕获，程序会中断
+php -r 'myexception();'
+PHP Fatal error:  Uncaught Error: This is my throw Error in (myexception) in Command line code:1
+Stack trace:
+#0 Command line code(1): myexception()
+#1 {main}
+  thrown in Command line code on line 1
+此时程序已经中断了
+
+
+写测试用例2: 捕获，程序不会中断
+//error.php
+<?php
+try{
+    myexception();
+}catch(Error $e){
+    echo $e->getMessage().PHP_EOL;
+}
+测试:
+php error.php
+输出:
+This is my throw Error in (myexception)
 ```
