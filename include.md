@@ -229,5 +229,72 @@ struct _zend_op {
 ```
 可以参照 ZEND_API int zend_execute_scripts(int type, zval *retval, int file_count, ...) 中的执行流程来实现一个自己的include功能函数
 
+PHP_FUNCTION(myinclude)
+{
+	zend_file_handle file_handle;
+	zend_op_array 	*op_array;
 
+	zend_string *file;
+	int need_free = 0;
+	int retval;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "S", &file) == FAILURE) {
+		return;
+	}
+
+	retval = zend_hash_exists(&EG(included_files), file);
+	if (retval) {
+		if (need_free) {
+			zend_string_release(file);
+		}
+		RETURN_TRUE;
+	}
+
+	file_handle.filename = ZSTR_VAL(file);
+	file_handle.free_filename = 0;
+	file_handle.type = ZEND_HANDLE_FILENAME;
+	file_handle.opened_path = NULL;
+	file_handle.handle.fp = NULL;
+
+	op_array = zend_compile_file(&file_handle, ZEND_INCLUDE);
+	if (file_handle.opened_path) {
+		zend_hash_add_empty_element(&EG(included_files), file_handle.opened_path);
+	}
+	zend_destroy_file_handle(&file_handle);
+	if (op_array) {
+		zval result;
+		zend_execute(op_array, &result);
+		zend_exception_restore();
+		zend_try_exception_handler();
+		if (EG(exception)) {
+			zend_exception_error(EG(exception), E_ERROR);
+		}
+		destroy_op_array(op_array);
+		efree_size(op_array, sizeof(zend_op_array));
+		zval_ptr_dtor(&result);
+		RETURN_TRUE;
+	} else {
+		RETURN_FALSE;
+	}
+}
+
+测试:
+// include_1.php
+<?php
+echo "aaa".PHP_EOL;
+
+// include_2.php
+<?php
+echo "bbb".PHP_EOL;
+
+// include.php
+<?php
+myinclude("./include_1.php");
+myinclude("./include_2.php");
+
+执行测试:
+php include.php
+输出:
+aaa
+bbb
 ```
