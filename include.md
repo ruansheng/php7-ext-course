@@ -224,3 +224,10 @@ struct _zend_op {
 
 编译完成得到opcode，然后调用zend_execute(op_array, retval);执行opcode
 ```
+
+### 在扩展中实现自己的include
+```
+可以参照 ZEND_API int zend_execute_scripts(int type, zval *retval, int file_count, ...) 中的执行流程来实现一个自己的include功能函数
+
+
+```
