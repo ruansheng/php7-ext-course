@@ -4,6 +4,9 @@
 * Linux
 * PHP7+
 
+#### 建议与反馈
+可提Issues与我交流
+
 #### 教程目录
 
 [1.&nbsp; 创建一个扩展](./create_ext.md)
