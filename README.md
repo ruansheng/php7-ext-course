@@ -61,3 +61,5 @@
 
 [26. 扩展之间的依赖](./ext_deps.md)
 
+[27. 关于make test](./make_test.md)
+
