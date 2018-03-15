@@ -42,7 +42,7 @@ php-7.2.0
 这个工具有几个很有意思的参数，来看一下这些参数都是干啥用的:
 ```
 --extname=module  待创建扩展的名称，module是一个全为小写字母的标识符，仅包含字母和下划线，在 PHP 发行包的 ext/ 文件夹下是唯一的
---proto=file 指定一个函数描述文件，可以指定一个C语音的.h文件，这样创建的扩展中就自动生成了描述文件中指定的函数		
+--proto=file 指定一个函数描述文件，可以指定一个C语言的.h文件，这样创建的扩展中就自动生成了描述文件中指定的函数		
 	     Example: 
 	     	 echo 'int my_sum(int a,int b);' >> test.h
 	     	./ext_skel --extname=mytest --proto=./test.h
